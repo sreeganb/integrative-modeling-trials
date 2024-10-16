@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{natbib}
+\bibliographystyle{apsrev4-2}
+
+\title{Integrative Modeling Platform Tips and Tricks}
+\author{Sree ganesh Balasubramanian}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This document provides a collection of tips and tricks for using the Integrative Modeling Platform (IMP).
+
+\section{Parallel execution}
+In local machine, for example in pipo, you can use the following command to run the IMP in parallel.
+\begin{verbatim}
+source ~/work/imp_release/setup_environment.sh
+mpirun -np 4 python > output.out 2> error.out &
+\end{verbatim}
+
+\section{Working with RMF files}
+\subsection{Reading RMF files}
+\begin{verbatim}
+import os
+import IMP
+import RMF
+import IMP.pmi.output
+import IMP.pmi.tools 
+from IMP.pmi.tools import get_residue_indexes
+from Bio.PDB import PDBParser, PDBExceptions
+import matplotlib.pyplot as plt
+import numpy as np
+import IMP.core
+
+# Load the RMF file
+rmf3_file = "./analysis/A_models_cluster2_0.rmf3"
+m = IMP.Model()
+rh = RMF.open_rmf_file_read_only(rmf3_file)
+h = IMP.rmf.create_hierarchies(rh, m)
+num_frames = rh.get_number_of_frames()
+print("Number of frames in RMF file: ", num_frames)
+
+print("hierarchy", get_residue_indexes(h[0].get_children()[0].get_children()[13]))
+
+mol = IMP.pmi.tools.get_molecules(h[0])
+print("molecules", mol)
+
+for i in range(len(mol)):
+    if mol[i].get_name() == "Rpt6":
+        rpt6_pos = i
+    elif mol[i].get_name() == "Rpt2":
+        rpt2_pos = i
+    else:
+        continue
+        
+sel1 =IMP.atom.Selection(mol[rpt6_pos], residue_index = 222, representation_type = IMP.atom.BALLS, resolution = 1)
+parts1 = sel1.get_selected_particles()
+coor1 = IMP.core.XYZ(parts1[0]).get_coordinates()
+print("coor1", coor1)
+
+sel2 =IMP.atom.Selection(mol[rpt2_pos], residue_index = 258, representation_type = IMP.atom.BALLS, resolution = 1)
+parts2 = sel2.get_selected_particles()
+coor2 = IMP.core.XYZ(parts2[0]).get_coordinates()
+print("coor2", coor2)
+
+print("distance", np.linalg.norm(coor1-coor2))
+dist = np.linalg.norm(coor1-coor2)
+\end{verbatim}
+
+\section{Specific Techniques}
+\subsection{Modeling Protein-Protein Interactions}
+\begin{itemize}
+    \item ...
+\end{itemize}
+
+\subsection{Flexible Modeling}
+\begin{itemize}
+    \item ...
+\end{itemize}
+
+\section{Troubleshooting}
+\begin{itemize}
+    \item ...
+\end{itemize}
+
+\bibliography{references}
+\end{document}
