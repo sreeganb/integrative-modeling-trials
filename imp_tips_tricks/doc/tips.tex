@@ -12,6 +12,20 @@
 \section{Introduction}
 This document provides a collection of tips and tricks for using the Integrative Modeling Platform (IMP).
 
+\section{IMP compilation}
+\subsection{Linux}
+\begin{verbatim}
+    cmake -G Ninja ~/git/imp/ -DIMP_DISABLED_MODULES=em2d:spb:npctransport:pmi1
+    cmake --build . -j10
+\end{verbatim}
+\subsection{MacOS}
+While working with developing a new repository and a method, say bhm/ in this case, \cite{Author1999}
+you can use the following command to compile the new module against IMP 
+\begin{verbatim}
+    cmake -G Ninja ../ -DIMP_DIR=/Users/sreeganeshbalasubramani/work/imp_release/ 
+    -DCMAKE_CXX_FLAGS='-std=c++17 -D_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION' 
+    -DPython3_EXECUTABLE=/Users/sreeganeshbalasubramani/bin/anaconda3/bin/python
+\end{verbatim}
 \section{Parallel execution}
 In local machine, for example in pipo, you can use the following command to run the IMP in parallel.
 \begin{verbatim}
